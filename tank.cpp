@@ -2,7 +2,7 @@
 #include <cmath>
 
 Tank::Tank(sf::Vector2f startPos)
-        : body({65.f, 45.f}), turret({25.f, 25.f}), gun({30.f, 10.f})
+        : body({65.f, 40.f}), turret({25.f, 25.f}), gun({40.f, 10.f})
 {
     body.setOrigin(body.getSize()/2.f);
     turret.setOrigin(turret.getSize()/2.f);
@@ -25,8 +25,11 @@ void Tank::handleInput(float dt){
     if (sf::Keyboard::isKeyPressed(K::W)) body.move(foward * moveSpeed * dt);
     if (sf::Keyboard::isKeyPressed(K::S)) body.move(-foward * moveSpeed * dt);
 
-    if (sf::Keyboard::isKeyPressed(K::Right)) turretAngle += sf::degrees(turnSpeed * dt);
-    if (sf::Keyboard::isKeyPressed(K::Left)) turretAngle += sf::degrees(-turnSpeed * dt);
+    if (sf::Keyboard::isKeyPressed(K::LControl) && sf::Keyboard::isKeyPressed(K::Right)) turretAngle += sf::degrees((turnSpeed-75.f) * dt);
+    else if (sf::Keyboard::isKeyPressed(K::Right)) turretAngle += sf::degrees(turnSpeed * dt);
+
+    if (sf::Keyboard::isKeyPressed(K::LControl) && sf::Keyboard::isKeyPressed(K::Left)) turretAngle += sf::degrees(-(turnSpeed-75.f) * dt);
+    else if (sf::Keyboard::isKeyPressed(K::Left)) turretAngle += sf::degrees(-turnSpeed * dt);
 }
 
 void Tank::update(float dt){

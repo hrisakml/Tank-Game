@@ -9,7 +9,7 @@
 const std::string ASSET_DIR = "assets/";
 std::vector<Bullet> bullets;
 float shootCD = 0.f;
-const float shootDelay = 0.5f;
+const float shootDelay = 0.3f;
 
 int main(){
     sf::RenderWindow window(sf::VideoMode({900, 600}), "Game");
@@ -43,7 +43,7 @@ int main(){
             shootCD = shootDelay;
         }
 
-        for (Bullet& b:bullets) b.update(dt);
+        for (Bullet& b:bullets) b.update(dt, window.getSize());
 
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [&](const Bullet& b) {return b.isOutside(window.getSize()); }),
                 bullets.end());
