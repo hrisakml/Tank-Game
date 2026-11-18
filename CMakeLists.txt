@@ -21,7 +21,8 @@ add_executable(game
                 main.cpp 
                 tank.cpp 
                 tile.cpp
-                bullet.cpp)
+                bullet.cpp
+                enemy.cpp)
 target_link_libraries(game PRIVATE SFML::Graphics SFML::Window SFML::System SFML::Audio)
 
 add_custom_command(TARGET game POST_BUILD

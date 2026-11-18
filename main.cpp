@@ -2,6 +2,7 @@
 #include "tank.hpp"
 #include "tile.hpp"
 #include "bullet.hpp"
+#include "enemy.hpp"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -29,6 +30,13 @@ int main(){
     debug.setFillColor(sf::Color::Black);
 
     Tank tank({400.f, 300.f});
+    Enemy enemy({120.f, 120.f});
+    Enemy enemy2({120.f, 400.f});
+    Enemy enemy3({400.f, 400.f});
+    Enemy enemy4({400.f, 120.f});
+    Enemy enemy5({680.f, 120.f});
+    Enemy enemy6({680.f, 400.f});
+    
     sf::Clock clock;
     while(window.isOpen()){
         float dt = clock.restart().asSeconds();
@@ -51,6 +59,13 @@ int main(){
         tank.handleInput(dt);
         tank.update(dt);
 
+        enemy.enemyAim(tank.getPosition(), dt);
+        enemy2.enemyAim(tank.getPosition(), dt);
+        enemy3.enemyAim(tank.getPosition(), dt);
+        enemy4.enemyAim(tank.getPosition(), dt);
+        enemy5.enemyAim(tank.getPosition(), dt);
+        enemy6.enemyAim(tank.getPosition(), dt);
+
         debug.setString("Pos: " + std::to_string(tank.getPosition().x) + ", " + std::to_string(tank.getPosition().y) + 
                     "\nRot: " + std::to_string(tank.bodyRot().asDegrees()) + 
                     "\nbarRot: " + std::to_string(tank.turRot().asDegrees()));
@@ -59,6 +74,14 @@ int main(){
         tiles.draw(window);
         window.draw(debug);
         tank.draw(window);
+
+        enemy.draw(window);
+        enemy2.draw(window);
+        enemy3.draw(window);
+        enemy4.draw(window);
+        enemy5.draw(window);
+        enemy6.draw(window);
+        
         for (const Bullet &b:bullets) b.draw(window);
         window.display();
     }
