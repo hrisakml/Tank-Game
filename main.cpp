@@ -4,11 +4,13 @@
 #include "bullet.hpp"
 #include "enemy.hpp"
 #include <iostream>
+#include <vector>
 #include <cmath>
 #include <algorithm>
 
 const std::string ASSET_DIR = "assets/";
 std::vector<Bullet> bullets;
+std::vector<Enemy> enemies;
 float shootCD = 0.f;
 const float shootDelay = 0.3f;
 
@@ -16,6 +18,10 @@ int main(){
     sf::RenderWindow window(sf::VideoMode({900, 600}), "Game");
 
     Tile tiles(window.getSize(), 30);
+
+    const std::vector<sf::Vector2i> enemyCells = {{10, 4}, {20, 4}, {10, 15}, {20, 15}};
+    for (const sf::Vector2i& c:enemyCells)
+        enemies.emplace_back(tiles, c.x, c.y);
 
     std::cout << "window: " << window.getSize().x << "x" << window.getSize().y
           << "  cols=" << tiles.getCols()
@@ -30,12 +36,10 @@ int main(){
     debug.setFillColor(sf::Color::Black);
 
     Tank tank({400.f, 300.f});
-    Enemy enemy({120.f, 120.f});
-    Enemy enemy2({120.f, 400.f});
-    Enemy enemy3({400.f, 400.f});
-    Enemy enemy4({400.f, 120.f});
-    Enemy enemy5({680.f, 120.f});
-    Enemy enemy6({680.f, 400.f});
+    Enemy enemy(tiles, 5, 5);
+    Enemy enemy2({tiles, 5, 10});
+    Enemy enemy3({tiles, 10, 5});
+    Enemy enemy4({tiles, 10, 10});
     
     sf::Clock clock;
     while(window.isOpen()){
@@ -59,12 +63,9 @@ int main(){
         tank.handleInput(dt);
         tank.update(dt);
 
-        enemy.enemyAim(tank.getPosition(), dt);
-        enemy2.enemyAim(tank.getPosition(), dt);
-        enemy3.enemyAim(tank.getPosition(), dt);
-        enemy4.enemyAim(tank.getPosition(), dt);
-        enemy5.enemyAim(tank.getPosition(), dt);
-        enemy6.enemyAim(tank.getPosition(), dt);
+        //Enemy Aim
+        for (Enemy &e:enemies)
+            e.update(tank.getPosition(), dt);
 
         debug.setString("Pos: " + std::to_string(tank.getPosition().x) + ", " + std::to_string(tank.getPosition().y) + 
                     "\nRot: " + std::to_string(tank.bodyRot().asDegrees()) + 
@@ -75,12 +76,9 @@ int main(){
         window.draw(debug);
         tank.draw(window);
 
-        enemy.draw(window);
-        enemy2.draw(window);
-        enemy3.draw(window);
-        enemy4.draw(window);
-        enemy5.draw(window);
-        enemy6.draw(window);
+        //Draw Enemies
+        for (Enemy &e:enemies)
+            e.draw(window);
         
         for (const Bullet &b:bullets) b.draw(window);
         window.display();

@@ -1,20 +1,29 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+class Tile;
+
+class Tank;
+
 class Enemy{
     public:
-        Enemy(sf::Vector2f startPos);
+        Enemy(const Tile& tile, int col, int row);
 
-        void update(float dt);
+        void update(sf::Vector2f targetPos, float dt);
         void enemyAim(sf::Vector2f pos, float dt);
+        void enemyAimIdle(sf::Vector2f pos, float dt);
         void draw(sf::RenderTarget& target) const;
 
         sf::Vector2f getPosition() const {return body.getPosition(); }
+        float getAOErad() { return AOErad; }
     private:
         sf::RectangleShape body, gun;
+        sf::CircleShape AOE;
+        sf::Vector2f bodySize = {25.f, 25.f};
+        float AOErad = 150.f;
         float cooldownTimer = 0.0f;
         float turretAngle = 0.f;
         float TARGET_ANGLE = 0.f;
-        float turnSpeed = 100.f;
+        float turnSpeed = 50.f;
         int health = 100;
 };
