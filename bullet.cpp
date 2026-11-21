@@ -1,4 +1,5 @@
 #include "bullet.hpp"
+#include "enemy.hpp"
 #include <cmath>
 
 namespace {

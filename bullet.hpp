@@ -10,9 +10,13 @@ class Bullet{
         bool isOutside(sf::Vector2u windowSize) const;
         bool bounceX(sf::Vector2u windowSize) const;
         bool bounceY(sf::Vector2u windowSize) const;
+        void markHit() {hit = true;}
+        bool isHit() const {return hit;}
 
+        sf::FloatRect getBounds() const {return shape.getGlobalBounds();}
     private:
         sf::RectangleShape shape;
         sf::Vector2f velocity;
         int bounceCount = 3;
+        bool hit = false;
 };

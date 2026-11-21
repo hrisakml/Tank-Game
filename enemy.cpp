@@ -23,8 +23,8 @@ namespace {
     }
 }
 
-Enemy::Enemy(const Tile& tiles, int col, int row)
-    : gun({30.f, 10.f})
+Enemy::Enemy(const Tile& tiles, const sf::Font& font, int col, int row)
+    : gun({30.f, 10.f}), healthText(font, "", 13.f)
 {
     float half = tiles.getCellSize()/2.f;
     sf::Vector2f pos = tiles.cellToPixel(col, row) + sf::Vector2f(half, half);
@@ -37,8 +37,15 @@ Enemy::Enemy(const Tile& tiles, int col, int row)
     gun.setPosition(body.getPosition());
     gun.setFillColor(sf::Color(61, 66, 61));
 
+    //Red Circle
     AOE.setRadius(AOErad);
     AOE.setOrigin(AOE.getGeometricCenter());
+
+    //Health Text
+    healthText.setFillColor(sf::Color::Green);
+    healthText.setOutlineThickness(2.f);
+    healthText.setOutlineColor(sf::Color::Black);
+    refreshHealthText();
 }
 
 void Enemy::enemyAim(sf::Vector2f pos, float dt){
@@ -66,7 +73,21 @@ void Enemy::enemyAimIdle(sf::Vector2f pos, float dt){
     AOE.setFillColor(sf::Color(sf::Color::Transparent));
 }
 
+void Enemy::takeDamage(int amount){
+    health = std::max(0, health-amount);
+    refreshHealthText();
+}
+
+void Enemy::refreshHealthText(){
+    healthText.setString("Health: " + std::to_string(health));
+
+    sf::FloatRect b = healthText.getLocalBounds();
+    healthText.setOrigin({b.position.x + b.size.x / 2.f, b.position.y + b.size.y});
+    healthText.setPosition({body.getPosition().x, body.getPosition().y - body.getSize().y/2.f-4.f});
+}
+
 void Enemy::update(sf::Vector2f targetPos, float dt){
+    sf::FloatRect enemyBounds = body.getGlobalBounds();
     sf::Vector2f dif(std::abs(targetPos.x - body.getPosition().x), std::abs(targetPos.y - body.getPosition().y));
     if (dif.x < getAOErad() && dif.y < getAOErad()){
         enemyAim(targetPos, dt);
@@ -79,4 +100,5 @@ void Enemy::draw(sf::RenderTarget& target) const{
     target.draw(AOE);
     target.draw(body);
     target.draw(gun);
+    target.draw(healthText);
 }
